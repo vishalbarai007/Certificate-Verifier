@@ -1,0 +1,628 @@
+<!-- Copied for Vite dev/preview server routing -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verifier | Interactive Data Pipeline Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(17, 24, 39, 0.9);
+      --card-border: rgba(59, 130, 246, 0.25);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #6366f1;
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --console-bg: #030712;
+      --pipe: rgba(59, 130, 246, 0.3);
+      --particle: #00f0ff;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --card-border: rgba(203, 213, 225, 0.9);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --accent: #4f46e5;
+      --cyan: #0891b2;
+      --emerald: #059669;
+      --amber: #d97706;
+      --console-bg: #0f172a;
+      --pipe: rgba(148, 163, 184, 0.5);
+      --particle: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    [data-theme="light"] header {
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--emerald), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      color: #fff;
+      border: none;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .hero-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .hero-title h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--emerald), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title p {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .pipeline-wrapper {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      overflow-x: auto;
+    }
+
+    .pipeline-stages {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 980px;
+      position: relative;
+    }
+
+    .conduit-line {
+      position: absolute;
+      top: 50%;
+      left: 60px;
+      right: 60px;
+      height: 6px;
+      background: var(--pipe);
+      transform: translateY(-50%);
+      z-index: 1;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .conduit-flow {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, var(--particle), transparent);
+      background-size: 200px 100%;
+      animation: pipeFlow 2s linear infinite;
+    }
+
+    @keyframes pipeFlow {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .stage-card {
+      position: relative;
+      z-index: 2;
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      width: 155px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+    }
+
+    .stage-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .stage-card.active {
+      border-color: var(--emerald);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+      transform: scale(1.05);
+    }
+
+    .stage-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin: 0 auto 10px;
+    }
+
+    .stage-card.active .stage-icon {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--emerald);
+    }
+
+    .stage-num {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .stage-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .panel-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .terminal {
+      background: var(--console-bg);
+      border-radius: 14px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      height: 280px;
+      overflow-y: auto;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      line-height: 1.6;
+    }
+
+    .log-line {
+      margin-bottom: 4px;
+    }
+
+    .log-time {
+      color: var(--text-muted);
+      font-size: 10px;
+      margin-right: 6px;
+    }
+
+    .log-tag {
+      font-weight: 700;
+    }
+
+    .log-tag.ok { color: var(--emerald); }
+    .log-tag.info { color: var(--cyan); }
+    .log-tag.block { color: var(--amber); }
+
+    .stage-detail-box {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .detail-metric {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 13px;
+    }
+
+    .detail-metric span:first-child {
+      color: var(--text-muted);
+    }
+
+    .detail-metric span:last-child {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-logo">CP</div>
+      <div>
+        <div class="brand-title">Certificate Verifier</div>
+        <div class="brand-subtitle">Live Data Pipeline Architecture</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="streamBtn" onclick="toggleStream()">
+        <span id="streamIcon">⏸</span> <span id="streamText">Pause Stream</span>
+      </button>
+      <button class="btn" onclick="triggerNextStage()">Advance Stage ⏭</button>
+      <button class="btn" onclick="toggleTheme()" id="themeBtn">🌓 Theme</button>
+      <button class="btn btn-primary" onclick="window.location.href='/'">Launch App 🚀</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero-title">
+      <h1>Continuous Verification Pipeline</h1>
+      <p>
+        Watch state changes, payload normalization, cryptographic hashing, and block confirmation stream in real time across the distributed network.
+      </p>
+    </div>
+
+    <div class="pipeline-wrapper">
+      <div class="pipeline-stages">
+        <div class="conduit-line">
+          <div class="conduit-flow" id="conduitFlow"></div>
+        </div>
+
+        <div class="stage-card active" id="stage-1" onclick="selectStage(1)">
+          <div class="stage-icon">📥</div>
+          <div class="stage-num">Stage 01</div>
+          <div class="stage-title">Payload Ingestion</div>
+        </div>
+
+        <div class="stage-card" id="stage-2" onclick="selectStage(2)">
+          <div class="stage-icon">📐</div>
+          <div class="stage-num">Stage 02</div>
+          <div class="stage-title">Canonical Format</div>
+        </div>
+
+        <div class="stage-card" id="stage-3" onclick="selectStage(3)">
+          <div class="stage-icon">🔐</div>
+          <div class="stage-num">Stage 03</div>
+          <div class="stage-title">SHA-256 Digest</div>
+        </div>
+
+        <div class="stage-card" id="stage-4" onclick="selectStage(4)">
+          <div class="stage-icon">✍️</div>
+          <div class="stage-num">Stage 04</div>
+          <div class="stage-title">MetaMask Sign</div>
+        </div>
+
+        <div class="stage-card" id="stage-5" onclick="selectStage(5)">
+          <div class="stage-icon">⛏️</div>
+          <div class="stage-num">Stage 05</div>
+          <div class="stage-title">EVM Block Mint</div>
+        </div>
+
+        <div class="stage-card" id="stage-6" onclick="selectStage(6)">
+          <div class="stage-icon">🌐</div>
+          <div class="stage-num">Stage 06</div>
+          <div class="stage-title">Public Attest</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title" id="stageHeader">Stage 01: Ingestion Specifications</div>
+          <span style="font-size: 11px; font-weight:700; color:var(--emerald); background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:6px;">LIVE ACTIVE</span>
+        </div>
+
+        <div class="stage-detail-box" id="stageContent">
+          <p style="margin-bottom:14px; color:var(--text-muted);">
+            Accepts raw registration data from authorized academic registrars. Enforces format validation on student enrollment numbers, legal full names, degrees, and issuing institutions.
+          </p>
+
+          <div class="detail-metric">
+            <span>Input Format</span>
+            <span>JSON Object (UTF-8)</span>
+          </div>
+          <div class="detail-metric">
+            <span>Latency Budget</span>
+            <span>&lt; 50 ms</span>
+          </div>
+          <div class="detail-metric">
+            <span>Validation Checks</span>
+            <span>Non-empty, regex roll check</span>
+          </div>
+          <div class="detail-metric">
+            <span>Current Pipeline Item</span>
+            <span id="currentItemSerial">CERT-2024-0042</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🖥️ Real-Time Consensus Logs</div>
+          <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="clearLogs()">Clear</button>
+        </div>
+
+        <div class="terminal" id="terminalLogs"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isStreaming = true;
+    let currentStage = 1;
+    const totalStages = 6;
+
+    const stageDetails = {
+      1: {
+        title: "Stage 01: Payload Ingestion",
+        desc: "Ingests academic credential inputs. Sanitizes enrollment identifiers, verifies registrar wallet authorization, and initializes the in-memory processing pipeline.",
+        metrics: [
+          ["Input Source", "Admin Web Portal"],
+          ["Latency Budget", "< 50 ms"],
+          ["Input Validation", "Roll Format & Name Sanitization"],
+          ["Payload Status", "Buffered in memory"]
+        ]
+      },
+      2: {
+        title: "Stage 02: Canonical Payload Normalization",
+        desc: "Sorts and concatenates the student and degree attributes into a deterministic delimiter-separated string. Strips trailing whitespace to guarantee exact hash reproducibility.",
+        metrics: [
+          ["Delimiter", "Dual Pipe (||)"],
+          ["Character Encoding", "UTF-8"],
+          ["Format Invariant", "Zero leading/trailing spaces"],
+          ["Output Format", "Deterministic String"]
+        ]
+      },
+      3: {
+        title: "Stage 03: 256-Bit Cryptographic Hashing",
+        desc: "Executes SHA-256 cryptographic digest calculation over the normalized payload. Produces a 64-character hexadecimal unique digital identity.",
+        metrics: [
+          ["Algorithm", "SHA-256 (NIST FIPS 180-4)"],
+          ["Output Length", "256 bits (32 bytes)"],
+          ["Pre-image Resistance", "2^256 operations"],
+          ["Collision Resistance", "2^128 operations"]
+        ]
+      },
+      4: {
+        title: "Stage 04: MetaMask Private Key Signature",
+        desc: "Packages the parameters into an EIP-1193 transaction payload. The authorized registrar signs the transaction using their private key in MetaMask.",
+        metrics: [
+          ["Signature Scheme", "ECDSA (secp256k1)"],
+          ["Gas Estimate", "~142,380 gas units"],
+          ["Signer Key", "Admin Hardware / Extension Vault"],
+          ["RPC Protocol", "eth_sendTransaction"]
+        ]
+      },
+      5: {
+        title: "Stage 05: EVM Smart Contract Minting",
+        desc: "The transaction is mined into a block on the Ganache/Ethereum network. The Solidity 0.8.19 contract commits the certificate struct into persistent state storage.",
+        metrics: [
+          ["Contract Address", "0x92f6653E...ee7797F"],
+          ["Gas Used", "142,105 gas"],
+          ["Block Time", "~1.2 seconds"],
+          ["Event Emitted", "CertificateIssued()"]
+        ]
+      },
+      6: {
+        title: "Stage 06: Public Multi-Modal Attestation",
+        desc: "The credential enters global public verified status. Dynamic QR codes and the public verify portal can query the blockchain state with zero gas fees.",
+        metrics: [
+          ["Access Tier", "Public (Zero-Auth)"],
+          ["Query Method", "verifyCertificateView()"],
+          ["Query Cost", "0 ETH (Gasless View)"],
+          ["QR Format", "ISO/IEC 18004 (Level-H)"]
+        ]
+      }
+    };
+
+    function appendLog(tag, msg, type = 'info') {
+      const logs = document.getElementById('terminalLogs');
+      if (!logs) return;
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = 'log-line';
+      div.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-tag ${type}">[${tag}]</span> ${msg}`;
+      logs.appendChild(div);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function clearLogs() {
+      document.getElementById('terminalLogs').innerHTML = '';
+      appendLog('SYS', 'Logs reset by operator.', 'info');
+    }
+
+    function selectStage(num) {
+      currentStage = num;
+      document.querySelectorAll('.stage-card').forEach(c => c.classList.remove('active'));
+      const activeEl = document.getElementById(`stage-${num}`);
+      if (activeEl) activeEl.classList.add('active');
+
+      const data = stageDetails[num];
+      document.getElementById('stageHeader').innerText = data.title;
+      let html = `<p style="margin-bottom:14px; color:var(--text-muted);">${data.desc}</p>`;
+      data.metrics.forEach(([k, v]) => {
+        html += `<div class="detail-metric"><span>${k}</span><span>${v}</span></div>`;
+      });
+      document.getElementById('stageContent').innerHTML = html;
+    }
+
+    function triggerNextStage() {
+      const next = (currentStage % totalStages) + 1;
+      selectStage(next);
+
+      if (next === 1) appendLog('INGEST', 'Student registration payload received: 2024CS101', 'info');
+      if (next === 2) appendLog('CANONICAL', 'Normalized string: 2024CS101||Aarav Sharma||CS||2024', 'info');
+      if (next === 3) appendLog('HASH', 'Generated SHA-256 digest: 0x8f4325a72d113c49e7b23f87b8192a...', 'ok');
+      if (next === 4) appendLog('SIGN', 'EIP-1193 signature approved by 0xE894bc1268...', 'info');
+      if (next === 5) appendLog('CONSENSUS', 'Mined in Ganache Block #43 (142,380 gas)', 'block');
+      if (next === 6) appendLog('VERIFIED', 'Certificate registered & active on public ledger.', 'ok');
+    }
+
+    function toggleStream() {
+      isStreaming = !isStreaming;
+      document.getElementById('streamText').innerText = isStreaming ? 'Pause Stream' : 'Resume Stream';
+      document.getElementById('streamIcon').innerText = isStreaming ? '⏸' : '▶️';
+      const flow = document.getElementById('conduitFlow');
+      if (flow) {
+        flow.style.animationPlayState = isStreaming ? 'running' : 'paused';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('cv-pipeline-theme', next);
+    }
+
+    setInterval(() => {
+      if (isStreaming) {
+        triggerNextStage();
+      }
+    }, 3500);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('cv-pipeline-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      appendLog('BOOT', 'Pipeline initialized with Ganache RPC (http://127.0.0.1:7545)', 'ok');
+      appendLog('SYNC', 'Listening to Ethereum smart contract events...', 'info');
+      triggerNextStage();
+    });
+  </script>
+</body>
+</html>
