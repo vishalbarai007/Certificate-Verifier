@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verifier | Interactive Animated Flowchart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(17, 24, 39, 0.85);
+      --card-border: rgba(59, 130, 246, 0.25);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #6366f1;
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --line: rgba(59, 130, 246, 0.4);
+      --packet: #00f0ff;
+      --glow: rgba(59, 130, 246, 0.35);
+      --header-bg: rgba(9, 13, 22, 0.85);
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(203, 213, 225, 0.9);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --accent: #4f46e5;
+      --cyan: #0891b2;
+      --emerald: #059669;
+      --amber: #d97706;
+      --line: rgba(148, 163, 184, 0.6);
+      --packet: #2563eb;
+      --glow: rgba(37, 99, 235, 0.2);
+      --header-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    /* Ambient Mesh Grid */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 12px var(--glow);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      border: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .hero-title h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title p {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Diagram Area */
+    .flowchart-board {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      overflow-x: auto;
+    }
+
+    svg.connections {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .nodes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+    }
+
+    .step-row.left-aligned {
+      justify-content: flex-start;
+    }
+
+    .step-row.right-aligned {
+      justify-content: flex-end;
+    }
+
+    .flow-node {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 18px;
+      padding: 18px 24px;
+      width: 380px;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flow-node:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 14px 28px var(--glow);
+    }
+
+    .flow-node.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px var(--cyan);
+    }
+
+    .node-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .node-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary);
+    }
+
+    .node-badge.mint {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+    }
+
+    .node-badge.verify {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--cyan);
+    }
+
+    .node-step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .node-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .node-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Modal / Inspector Drawer */
+    .drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-top: 2px solid var(--primary);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .drawer.open {
+      transform: translateY(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .drawer-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .code-box {
+      background: #030712;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin-top: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Animated packet along path */
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -40;
+      }
+    }
+
+    .path-line {
+      stroke: var(--line);
+      stroke-width: 3;
+      stroke-dasharray: 8 6;
+      animation: dash 1.5s linear infinite;
+    }
+
+    .path-line.paused {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">CV</div>
+      <div>
+        <div class="brand-title">Certificate Verifier</div>
+        <div class="brand-subtitle">Interactive Architecture Flowchart</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="playBtn" onclick="togglePlay()">
+        <span id="playIcon">⏸</span> <span id="playText">Pause Flow</span>
+      </button>
+      <button class="btn" onclick="stepNext()">Step Next ⏭</button>
+      <button class="btn" onclick="toggleTheme()" id="themeBtn">🌓 Theme</button>
+      <button class="btn btn-primary" onclick="window.location.href='/'">Launch App 🚀</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero-title">
+      <h1>End-to-End Cryptographic Lifecycle</h1>
+      <p>
+        Follow the data packets as an academic degree moves from registration to immutable Ethereum smart contract minting and public verification.
+      </p>
+    </div>
+
+    <div class="flowchart-board">
+      <svg class="connections" id="svgCanvas"></svg>
+
+      <div class="nodes-grid">
+        <!-- Step 1 -->
+        <div class="step-row left-aligned">
+          <div class="flow-node" id="node-1" onclick="inspectNode(1)">
+            <div class="node-header">
+              <span class="node-badge">Client Ingestion</span>
+              <span class="node-step-num">STEP 01</span>
+            </div>
+            <div class="node-title">🎓 Student Enrollment</div>
+            <div class="node-desc">
+              Admin inputs student details (Name, Roll No, Department, Batch) into the secure client.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-row right-aligned">
+          <div class="flow-node" id="node-2" onclick="inspectNode(2)">
+            <div class="node-header">
+              <span class="node-badge">Hashing Engine</span>
+              <span class="node-step-num">STEP 02</span>
+            </div>
+            <div class="node-title">🔑 SHA-256 Digest Derivation</div>
+            <div class="node-desc">
+              Deterministic concatenation of student fields into a unique 256-bit cryptographic digest.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-row left-aligned">
+          <div class="flow-node" id="node-3" onclick="inspectNode(3)">
+            <div class="node-header">
+              <span class="node-badge">EIP-1193 Signer</span>
+              <span class="node-step-num">STEP 03</span>
+            </div>
+            <div class="node-title">🦊 MetaMask Cryptographic Signature</div>
+            <div class="node-desc">
+              Institution Admin signs the <code style="font-size:11px">issueCertificate()</code> transaction with private key.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-row right-aligned">
+          <div class="flow-node" id="node-4" onclick="inspectNode(4)">
+            <div class="node-header">
+              <span class="node-badge mint">EVM Execution</span>
+              <span class="node-step-num">STEP 04</span>
+            </div>
+            <div class="node-title">📜 Smart Contract Ledger Commit</div>
+            <div class="node-desc">
+              Solidity 0.8.19 contract enforces <code style="font-size:11px">onlyAdmin</code> check and seals record into state storage.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-row left-aligned">
+          <div class="flow-node" id="node-5" onclick="inspectNode(5)">
+            <div class="node-header">
+              <span class="node-badge mint">Consensus</span>
+              <span class="node-step-num">STEP 05</span>
+            </div>
+            <div class="node-title">⛓️ Block Mining & Finality</div>
+            <div class="node-desc">
+              Ganache/Ethereum network mines the block, producing an immutable transaction receipt.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-row right-aligned">
+          <div class="flow-node" id="node-6" onclick="inspectNode(6)">
+            <div class="node-header">
+              <span class="node-badge">Bridge</span>
+              <span class="node-step-num">STEP 06</span>
+            </div>
+            <div class="node-title">📱 Dynamic QR Code Embedding</div>
+            <div class="node-desc">
+              SVG/Canvas generates physical bridge QR code containing the direct public verification link.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step-row left-aligned">
+          <div class="flow-node" id="node-7" onclick="inspectNode(7)">
+            <div class="node-header">
+              <span class="node-badge verify">Public Attestation</span>
+              <span class="node-step-num">STEP 07</span>
+            </div>
+            <div class="node-title">🔍 Zero-Trust Verification</div>
+            <div class="node-desc">
+              Employers or embassies verify authenticity instantly by scanning QR or querying hash.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inspector Drawer -->
+  <div class="drawer" id="inspectorDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title" id="drawerTitle">Step Details</div>
+      <button class="btn" onclick="closeDrawer()">✕ Close</button>
+    </div>
+    <div id="drawerBody"></div>
+  </div>
+
+  <script>
+    let isPlaying = true;
+    let activeStep = 1;
+    const totalSteps = 7;
+
+    const stepData = {
+      1: {
+        title: "Step 1: Student Enrollment & Identity Ingestion",
+        desc: "The institution registrar inputs the student's legal academic record into the Admin Portal. Validates student roll numbers and assigns default authentication credentials.",
+        payload: '{\n  "enrollmentNumber": "2024CS101",\n  "name": "Aarav Sharma",\n  "department": "Computer Science & Engineering",\n  "batchYear": "2020-2024"\n}',
+        code: '// Solidity: Mapping in CertificateVerification.sol\nmapping(string => Student) private students;\n\nfunction registerStudent(string _enrollmentNumber, string _name, ...) public onlyAdmin {\n    students[_enrollmentNumber] = Student(_name, _email, true, block.timestamp);\n    emit StudentRegistered(_enrollmentNumber, _name, block.timestamp);\n}'
+      },
+      2: {
+        title: "Step 2: Deterministic SHA-256 Digest Derivation",
+        desc: "The browser normalizes the certificate payload. Applying SHA-256 ensures an unalterable cryptographic fingerprint with complete pre-image and collision resistance.",
+        payload: 'Payload = "2024CS101||Aarav Sharma||Computer Science||2024||MIT"\nHash = "0x8f4325a72d113c49e7b23f87b8192a3489e2467d02341908bf923a48e71b29c1"',
+        code: '// TypeScript Cryptographic Engine\nimport CryptoJS from "crypto-js";\n\nexport function generateCertificateHash(student, course, year) {\n    const payload = `${student.enrollment}||${student.name}||${course}||${year}`;\n    return "0x" + CryptoJS.SHA256(payload).toString();\n}'
+      },
+      3: {
+        title: "Step 3: MetaMask Cryptographic Authorization",
+        desc: "EIP-1193 interface requests the registrar's private key signature. Gas estimation is performed via Ethers.js before prompt submission.",
+        payload: 'Tx = {\n  "to": "0x92f6653E7FF0652A2d7042857D838c141ee7797F",\n  "gasLimit": 250000,\n  "from": "0xE894bc126822B8FBbeD56133E27221a0fC74DAd3"\n}',
+        code: '// Ethers.js v5 Signer Execution\nconst contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);\nconst tx = await contract.issueCertificate(\n    certificateHash,\n    certificateNumber,\n    enrollmentNumber,\n    studentName,\n    course,\n    institution,\n    year,\n    ipfsHash\n);\nawait tx.wait();'
+      },
+      4: {
+        title: "Step 4: Smart Contract State Commitment",
+        desc: "The Solidity contract checks that the caller matches the authorized admin, ensures the certificate serial number has not been used, and records the struct in persistent state storage.",
+        payload: 'Storage Slot 0x01: certificates[certificateHash] committed\nGas Used: ~142,380 gas',
+        code: 'function issueCertificate(...) public onlyAdmin {\n    require(!isCertificateNumberExists(_certNum), "Serial duplicate");\n    certificates[_hash] = Certificate(_certNum, _name, _course, block.timestamp);\n    emit CertificateIssued(_hash, _certNum, _name, block.timestamp, msg.sender);\n}'
+      },
+      5: {
+        title: "Step 5: Block Mining & Immutable Ledger Finality",
+        desc: "The local Ganache EVM (or Ethereum mainnet node) confirms the transaction into a block. The cryptographic Merkle root is sealed.",
+        payload: 'Block #42 confirmed\nBlockHash: 0x5a18c9b31...\nStatus: 0x1 (Success)',
+        code: '// Receipt Verification\nconst receipt = await provider.getTransactionReceipt(txHash);\nconsole.log(`Mined in block: ${receipt.blockNumber}`);'
+      },
+      6: {
+        title: "Step 6: Dynamic QR Code Synthesis & Physical Bridge",
+        desc: "Generates an error-corrected Level-H QR code pointing to the live verification endpoint. Embedded onto the physical parchment and downloadable PDF.",
+        payload: 'QR URL = "https://certificateverifier.edu/verify?hash=0x8f4325a..."\nCorrection: High (30% damage recovery)',
+        code: '// QRCode.toDataURL\nconst url = await QRCode.toDataURL(`https://domain/verify?hash=${hash}`, {\n    errorCorrectionLevel: "H",\n    margin: 1\n});'
+      },
+      7: {
+        title: "Step 7: Zero-Trust Public Attestation",
+        desc: "Any third party can scan the QR code or paste the hash. The public verification function executes in constant O(1) time without requiring login or gas fees.",
+        payload: 'Query: verifyCertificateView(hash)\nResult: {\n  "isValid": true,\n  "student": "Aarav Sharma",\n  "degree": "Computer Science"\n}',
+        code: '// Read-only Gasless View\nfunction verifyCertificateView(string memory _hash) public view returns (bool) {\n    return bytes(certificates[_hash].studentName).length > 0;\n}'
+      }
+    };
+
+    function drawLines() {
+      const svg = document.getElementById('svgCanvas');
+      svg.innerHTML = '';
+      
+      for (let i = 1; i < totalSteps; i++) {
+        const fromNode = document.getElementById(`node-${i}`);
+        const toNode = document.getElementById(`node-${i + 1}`);
+
+        if (!fromNode || !toNode) continue;
+
+        const boardRect = document.querySelector('.flowchart-board').getBoundingClientRect();
+        const r1 = fromNode.getBoundingClientRect();
+        const r2 = toNode.getBoundingClientRect();
+
+        const x1 = (r1.left + r1.right) / 2 - boardRect.left;
+        const y1 = r1.bottom - boardRect.top;
+        const x2 = (r2.left + r2.right) / 2 - boardRect.left;
+        const y2 = r2.top - boardRect.top;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const midY = (y1 + y2) / 2;
+        const d = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+
+        path.setAttribute('d', d);
+        path.setAttribute('class', `path-line ${isPlaying ? '' : 'paused'}`);
+        path.setAttribute('fill', 'none');
+        svg.appendChild(path);
+      }
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById('playText').innerText = isPlaying ? 'Pause Flow' : 'Play Flow';
+      document.getElementById('playIcon').innerText = isPlaying ? '⏸' : '▶️';
+      document.querySelectorAll('.path-line').forEach(p => {
+        if (isPlaying) p.classList.remove('paused');
+        else p.classList.add('paused');
+      });
+    }
+
+    function stepNext() {
+      document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active'));
+      activeStep = (activeStep % totalSteps) + 1;
+      const target = document.getElementById(`node-${activeStep}`);
+      if (target) {
+        target.classList.add('active');
+        inspectNode(activeStep);
+      }
+    }
+
+    function inspectNode(step) {
+      const data = stepData[step];
+      if (!data) return;
+
+      document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active'));
+      document.getElementById(`node-${step}`).classList.add('active');
+
+      document.getElementById('drawerTitle').innerText = data.title;
+      document.getElementById('drawerBody').innerHTML = `
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.6;">${data.desc}</p>
+        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-top: 14px;">Runtime Data Payload</div>
+        <div class="code-box">${data.payload}</div>
+        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--emerald); margin-top: 14px;">Implementation Logic</div>
+        <div class="code-box">${data.code}</div>
+      `;
+
+      document.getElementById('inspectorDrawer').classList.add('open');
+    }
+
+    function closeDrawer() {
+      document.getElementById('inspectorDrawer').classList.remove('open');
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('cv-docs-theme', next);
+      setTimeout(drawLines, 50);
+    }
+
+    // Auto-step loop
+    setInterval(() => {
+      if (isPlaying) {
+        activeStep = (activeStep % totalSteps) + 1;
+        document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active'));
+        const target = document.getElementById(`node-${activeStep}`);
+        if (target) target.classList.add('active');
+      }
+    }, 4000);
+
+    window.addEventListener('resize', drawLines);
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('cv-docs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      setTimeout(drawLines, 200);
+    });
+  </script>
+</body>
+</html>
