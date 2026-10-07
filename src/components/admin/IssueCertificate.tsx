@@ -41,6 +41,7 @@ import jsPDF from 'jspdf';
 export function IssueCertificate() {
   const [step, setStep] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
+  const [showSuccessPreview, setShowSuccessPreview] = useState(false);
 
   const [formData, setFormData] = useState({
     enrollmentNumber: '',
@@ -234,25 +235,37 @@ export function IssueCertificate() {
     try {
       setIsDownloadingPdf(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Wait a moment for layout and QR code image to settle
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
       const canvas = await html2canvas(element, {
-        scale: 3,
+        scale: 2,
         useCORS: true,
-        backgroundColor: '#ffffff'
+        allowTaint: true,
+        backgroundColor: '#fdfcf7',
+        logging: false,
+        width: 794,
+        height: 1123,
+        windowWidth: 1200,
+        windowHeight: 1600
       });
 
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
 
       pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
       pdf.save(fileName);
 
       toast({
-        title: 'PDF Downloaded',
-        description: 'Certificate PDF has been downloaded successfully.'
+        title: '✓ PDF Downloaded',
+        description: `${fileName} downloaded successfully.`
       });
     } catch (error: any) {
+      console.error('PDF Generation Error:', error);
       toast({
         title: 'Download Failed',
         description: error.message || 'Could not generate PDF.',
@@ -454,8 +467,7 @@ export function IssueCertificate() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button
               type="button"
-              variant="outline"
-              className="gap-2"
+              className="gap-2 font-semibold shadow-md shadow-primary/20"
               onClick={() =>
                 downloadPdfFromElement(
                   successPreviewRef.current,
@@ -464,14 +476,30 @@ export function IssueCertificate() {
               }
               disabled={isDownloadingPdf}
             >
-              <Download className="h-4 w-4" />
-              {isDownloadingPdf ? 'Downloading...' : 'Download PDF'}
+              {isDownloadingPdf ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {isDownloadingPdf ? 'Generating PDF...' : 'Download PDF'}
             </Button>
 
             <Button
+              type="button"
+              variant="outline"
+              className="gap-2 font-medium"
+              onClick={() => setShowSuccessPreview((prev) => !prev)}
+            >
+              <Eye className="h-4 w-4" />
+              {showSuccessPreview ? 'Hide Certificate Preview' : 'View Certificate Preview'}
+            </Button>
+
+            <Button
+              variant="secondary"
               onClick={() => {
                 setStep(1);
                 setShowPreview(false);
+                setShowSuccessPreview(false);
                 setResult(null);
                 setStudentFound(false);
                 setFormData({
@@ -493,7 +521,23 @@ export function IssueCertificate() {
             </Button>
           </div>
 
-          <div className="mt-8 hidden">
+          <div
+            style={
+              showSuccessPreview
+                ? { marginTop: '2rem' }
+                : {
+                    position: 'fixed',
+                    left: '-9999px',
+                    top: '0',
+                    width: '850px',
+                    height: '1200px',
+                    overflow: 'hidden',
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    zIndex: -9999
+                  }
+            }
+          >
             <CertificatePreview
               ref={successPreviewRef}
               certificateNumber={result.certificateNumber}
@@ -708,35 +752,35 @@ export function IssueCertificate() {
           </Button>
         </div>
 
-        {showPreview ? (
-          <div className="pt-4">
-            <CertificatePreview
-              ref={previewRef}
-              certificateNumber={previewCertificateNumber}
-              studentName={formData.studentName || 'Student Name'}
-              course={formData.course || 'Course Name'}
-              institution={formData.institution || 'Institute Name'}
-              issueDate={new Date().toISOString()}
-              certificateHash={previewHash}
-              issuerName="Vishal Barai"
-              issuerTitle="Dean of Academic Affairs / Registrar"
-            />
-          </div>
-        ) : (
-          <div className="hidden">
-            <CertificatePreview
-              ref={previewRef}
-              certificateNumber={previewCertificateNumber}
-              studentName={formData.studentName || 'Student Name'}
-              course={formData.course || 'Course Name'}
-              institution={formData.institution || 'Institute Name'}
-              issueDate={new Date().toISOString()}
-              certificateHash={previewHash}
-              issuerName="Vishal Barai"
-              issuerTitle="Dean of Academic Affairs / Registrar"
-            />
-          </div>
-        )}
+        <div
+          style={
+            showPreview
+              ? { paddingTop: '1rem' }
+              : {
+                  position: 'fixed',
+                  left: '-9999px',
+                  top: '0',
+                  width: '850px',
+                  height: '1200px',
+                  overflow: 'hidden',
+                  opacity: 0,
+                  pointerEvents: 'none',
+                  zIndex: -9999
+                }
+          }
+        >
+          <CertificatePreview
+            ref={previewRef}
+            certificateNumber={previewCertificateNumber}
+            studentName={formData.studentName || 'Student Name'}
+            course={formData.course || 'Course Name'}
+            institution={formData.institution || 'Institute Name'}
+            issueDate={new Date().toISOString()}
+            certificateHash={previewHash}
+            issuerName="Vishal Barai"
+            issuerTitle="Dean of Academic Affairs / Registrar"
+          />
+        </div>
       </CardContent>
     </Card>
   );

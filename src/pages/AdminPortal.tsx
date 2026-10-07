@@ -83,6 +83,7 @@ export default function AdminPortal() {
     isLoading,
     error,
     connectWallet,
+    switchAccount,
     initContract,
     disconnect,
     service
@@ -417,6 +418,27 @@ export default function AdminPortal() {
                   </p>
                 </div>
 
+                {walletAddress.toLowerCase() !== ADMIN_WALLET_ADDRESS.toLowerCase() && (
+                  <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-800 dark:text-amber-300 space-y-1.5">
+                    <div className="font-semibold flex items-center gap-1.5">
+                      <AlertCircle className="h-4 w-4 shrink-0 text-amber-500" />
+                      Notice: Connected with Non-Admin Account
+                    </div>
+                    <p className="text-[11px] leading-relaxed opacity-90">
+                      You are connected with <span className="font-mono font-medium">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>. The admin account is <span className="font-mono font-medium">{ADMIN_WALLET_ADDRESS.slice(0, 6)}...{ADMIN_WALLET_ADDRESS.slice(-4)}</span> (Vishal).
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={switchAccount}
+                      className="mt-1 w-full rounded-xl border-amber-500/40 text-amber-900 dark:text-amber-200 hover:bg-amber-500/20 text-xs font-semibold h-9"
+                    >
+                      Switch to Admin Account in MetaMask
+                    </Button>
+                  </div>
+                )}
+
                 <Button
                   onClick={handleInitContract}
                   disabled={isLoading}
@@ -476,7 +498,16 @@ export default function AdminPortal() {
                 </div>
 
                 <Button
+                  onClick={switchAccount}
+                  className="w-full rounded-xl gap-2 font-semibold h-11 shadow-md shadow-primary/20"
+                >
+                  <ShieldCheck className="h-4 w-4" />
+                  Switch to Admin Account in MetaMask
+                </Button>
+
+                <Button
                   onClick={enableDemoMode}
+                  variant="outline"
                   className="w-full rounded-xl gap-2 font-semibold h-11"
                 >
                   <Sparkles className="h-4 w-4" />

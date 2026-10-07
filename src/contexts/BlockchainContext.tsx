@@ -27,6 +27,7 @@ interface BlockchainContextType {
   isLoading: boolean;
   error: string;
   connectWallet: () => Promise<void>;
+  switchAccount: () => Promise<void>;
   initContract: (contractAddress: string) => Promise<void>;
   disconnect: () => void;
 }
@@ -54,6 +55,27 @@ export function BlockchainProvider({ children }: { children: ReactNode }) {
       setError(err.message || 'Failed to connect wallet');
       setIsConnected(false);
       setWalletAddress('');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const switchAccount = async () => {
+    try {
+      setIsLoading(true);
+      setError('');
+
+      const address = await blockchainService.switchAccount();
+
+      setWalletAddress(address);
+      setIsConnected(true);
+
+      if (contractAddress) {
+        await initContract(contractAddress);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to switch account');
       throw err;
     } finally {
       setIsLoading(false);
@@ -102,6 +124,7 @@ export function BlockchainProvider({ children }: { children: ReactNode }) {
       isLoading,
       error,
       connectWallet,
+      switchAccount,
       initContract,
       disconnect
     }),
