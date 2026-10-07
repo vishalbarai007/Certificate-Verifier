@@ -143,7 +143,7 @@ export function Navbar() {
                 isConnected ? "bg-emerald-500" : "bg-amber-500"
               )} />
             </span>
-            <span>{isConnected ? (shortAddress || 'Connected') : 'Ganache 1337'}</span>
+            <span>{isConnected ? (shortAddress || 'Connected') : 'Hardhat 31337'}</span>
           </div>
 
           <ThemeToggle />
@@ -231,7 +231,7 @@ export function Navbar() {
             <div className="mt-2 flex items-center justify-between rounded-xl bg-muted/50 p-3 text-xs">
               <span className="text-muted-foreground">Network State</span>
               <span className="font-mono text-emerald-600 dark:text-emerald-400 font-medium">
-                {isConnected ? (shortAddress || 'Connected') : 'Ganache (Port 7545)'}
+                {isConnected ? (shortAddress || 'Connected') : 'Hardhat (Port 8545)'}
               </span>
             </div>
           </div>

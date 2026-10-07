@@ -28,7 +28,7 @@ graph TD
         StateStudents["mapping(string => Student) students"]
         StateCerts["mapping(string => Certificate) certificates"]
         StateHashes["string[] certificateHashes"]
-        Ganache["Ganache Local EVM Blockchain (Chain ID 1337 / Port 7545)"]
+        Hardhat["Hardhat Local EVM Node (Chain ID 31337 / Port 8545)"]
     end
 
     ClientLayer --> Web3Bridge

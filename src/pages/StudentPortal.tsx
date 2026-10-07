@@ -232,7 +232,7 @@ export default function StudentPortal() {
       } else {
         toast({
           title: 'Login Failed',
-          description: 'Student not found or Ganache RPC not responding on port 7545. Try demo login.',
+          description: 'Student not found or Hardhat node not responding on port 8545. Try demo login.',
           variant: 'destructive'
         });
       }

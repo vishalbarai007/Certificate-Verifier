@@ -402,11 +402,11 @@ export default function Index() {
                 Network & Tech
               </h4>
               <p className="text-xs text-muted-foreground mb-2">
-                Ethereum VM • Ethers.js v5 • Ganache RPC (Port 7545) • MetaMask Integration
+                Ethereum VM • Ethers.js v5 • Hardhat Node (Port 8545) • MetaMask Integration
               </p>
               <div className="inline-flex items-center gap-2 rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Network Online: Chain 1337
+                Network Online: Chain 31337
               </div>
             </div>
           </div>

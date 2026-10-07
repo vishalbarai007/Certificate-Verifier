@@ -8,48 +8,55 @@ This manual provides step-by-step walkthroughs for setting up, deploying, and op
 
 ### Software Requirements:
 - **Node.js**: v18.0.0 or higher
-- **npm** or **bun**: Package manager
+- **npm**: Package manager
 - **MetaMask**: Browser extension for Chrome / Firefox / Brave / Edge
-- **Ganache**: Local Ethereum blockchain simulator (GUI or CLI)
+- **Hardhat**: Local Ethereum development environment (installed locally via `package.json`)
 
 ---
 
-## 2. Setting Up the Local Blockchain (Ganache)
+## 2. Setting Up the Local Blockchain (Hardhat Node)
 
-1. Launch **Ganache** and select **Quickstart Workspace**.
-2. Note the network parameters:
-   - **RPC Server**: `HTTP://127.0.0.1:7545`
-   - **Network ID**: `5777` or `1337`
-3. Click the key icon on Account (0) in Ganache to view and copy the **Private Key**.
+1. Open a terminal in the project root directory and start the local Hardhat blockchain node:
+   ```bash
+   npm run hardhat:node
+   ```
+2. The node runs at `http://127.0.0.1:8545` with **Chain ID 31337** and prints 20 pre-funded test accounts with 10,000 ETH each.
+3. Keep this terminal open.
 
 ---
 
 ## 3. Configuring MetaMask
 
 1. Open MetaMask and navigate to **Settings > Networks > Add a Network Manually**.
-2. Enter the Ganache network credentials:
-   - **Network Name**: `Ganache Local`
-   - **New RPC URL**: `http://127.0.0.1:7545`
-   - **Chain ID**: `1337` (or `5777` depending on Ganache version)
+2. Enter the Hardhat network credentials:
+   - **Network Name**: `Hardhat Local`
+   - **New RPC URL**: `http://127.0.0.1:8545`
+   - **Chain ID**: `31337`
    - **Currency Symbol**: `ETH`
 3. Click **Save**.
-4. In MetaMask, click your account avatar, choose **Import Account**, and paste the **Private Key** copied from Ganache Account (0).
-5. Your MetaMask wallet will now show a starting balance of **100 ETH**.
+4. In MetaMask, click your account avatar, choose **Import Account**, and paste the private key for Hardhat Account #0:
+   ```text
+   0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+   ```
+   *(Address: `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`)*
+5. Your MetaMask wallet will now show a starting balance of **10,000 ETH** on `Hardhat Local`.
 
 ---
 
-## 4. Deploying the Smart Contract (Remix IDE)
+## 4. Compiling and Deploying the Smart Contract (Hardhat)
 
-1. Open [Remix IDE](https://remix.ethereum.org/).
-2. Create a new file named `CertificateVerification.sol`.
-3. Copy the contract code from [`.sol`](file:///media/vishal-barai/New%20Volume/College-Projects/be-major-projects/BLOCKCHAIN-BASED-CERTIFICATE-VERIFICATION/.sol) into Remix.
-4. Go to the **Solidity Compiler** tab and select compiler version **0.8.19**. Click **Compile**.
-5. Go to the **Deploy & Run Transactions** tab:
-   - Under **Environment**, select **Injected Provider - MetaMask**.
-   - Confirm that your imported Ganache account is selected.
-   - Click **Deploy** and confirm the transaction in MetaMask.
-6. Copy the newly deployed contract address (starts with `0x...`).
-7. Update `DEFAULT_CONTRACT_ADDRESS` in [`src/lib/blockchain.ts`](file:///media/vishal-barai/New%20Volume/College-Projects/be-major-projects/BLOCKCHAIN-BASED-CERTIFICATE-VERIFICATION/src/lib/blockchain.ts) with this address.
+1. In a second terminal, compile the Solidity contracts:
+   ```bash
+   npm run hardhat:compile
+   ```
+2. Deploy the contract to your local Hardhat node:
+   ```bash
+   npm run hardhat:deploy
+   ```
+3. The deployment script (`scripts/deploy.js`):
+   - Deploys `contracts/CertificateVerification.sol` to the local node.
+   - Automatically synchronizes `DEFAULT_CONTRACT_ADDRESS` and `ADMIN_WALLET_ADDRESS` in `src/lib/blockchain.ts`.
+   - Exports the contract ABI and records deployment metadata to `src/lib/deployment.json`.
 
 ---
 

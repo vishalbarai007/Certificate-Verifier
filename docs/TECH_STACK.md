@@ -17,7 +17,7 @@ This document outlines all technical libraries, frameworks, runtime environments
 | **Iconography** | **Lucide React** | `^0.462.0` | Crisp, consistent SVG icons with tree-shaking support. |
 | **Web3 Client** | **Ethers.js** | `^5.7.2` | Clean abstractions for JsonRpcProvider, Contract abstraction, and Signer handling. |
 | **Smart Contract Language** | **Solidity** | `^0.8.19` | Industry-standard EVM smart contract programming language with overflow checks. |
-| **Consensus Testnet** | **Ganache** | `v7.x` | High-speed local EVM node simulating Ethereum consensus at `127.0.0.1:7545`. |
+| **Consensus Testnet** | **Hardhat Node** | `v3.18.x` | High-speed local EVM node simulating Ethereum consensus at `127.0.0.1:8545` (Chain ID `31337`). |
 | **Cryptographic Wallet** | **MetaMask** | Extension | Client-side private key custodian, transaction signing, and network routing. |
 | **QR Generation** | **qrcode.react** | `^4.2.0` | Fast SVG/Canvas rendering of verification URLs for physical certificates. |
 | **QR Code Scanner** | **html5-qrcode** | `^2.3.8` | Client-side computer vision decoding for uploaded certificate images. |
@@ -46,7 +46,7 @@ This document outlines all technical libraries, frameworks, runtime environments
 ### 4. Solidity 0.8.19
 - Built-in integer overflow/underflow protection without requiring external `SafeMath` libraries.
 - Optimal gas consumption for storage mappings.
-- Widespread compatibility with EVM tooling (Remix, Hardhat, Foundry, Ganache).
+- Widespread compatibility with EVM tooling (Hardhat, Remix, Foundry).
 
 ---
 

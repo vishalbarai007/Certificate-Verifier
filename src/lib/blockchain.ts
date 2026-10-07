@@ -1,46 +1,514 @@
 import { ethers } from 'ethers';
 
-// Contract ABI - matches the updated Solidity contract
+// Contract ABI - automatically extracted from compiled artifact
 export const CONTRACT_ABI = [
-  // Events
-  'event CertificateIssued(string indexed certificateHash, string certificateNumber, string studentName, string enrollmentNumber, string course, uint256 issueDate, address issuerAddress)',
-  'event StudentRegistered(string indexed enrollmentNumber, string studentName, uint256 registrationDate)',
-  'event CertificateVerified(string indexed certificateHash, bool isValid, uint256 verificationTime)',
-
-  // Admin functions
-  'function registerStudent(string _enrollmentNumber, string _name, string _email, string _mobileNumber, string _department, string _batchYear, string _password) public',
-  'function issueCertificate(string _certificateHash, string _certificateNumber, string _enrollmentNumber, string _studentName, string _course, string _institution, uint256 _issueYear, string _ipfsHash) public',
-
-  // Verification functions
-  'function verifyCertificate(string _certificateHash) public returns (bool)',
-  'function verifyCertificateView(string _certificateHash) public view returns (bool)',
-
-  // Getter functions
-  'function getCertificate(string _certificateHash) public view returns (string certificateNumber, string studentName, string enrollmentNumber, string course, string institution, uint256 issueYear, uint256 issueDate, string ipfsHash, address issuerAddress)',
-  'function getStudent(string _enrollmentNumber) public view returns (string name, string email, string mobileNumber, string department, string batchYear, bool isRegistered, uint256 registrationDate)',
-  'function verifyStudentLogin(string _enrollmentNumber, string _password) public view returns (bool)',
-  'function getStudentCertificates(string _enrollmentNumber) public view returns (string[])',
-  'function getAllCertificateHashes() public view returns (string[])',
-  'function getAllEnrollmentNumbers() public view returns (string[])',
-  'function getTotalCertificates() public view returns (uint256)',
-  'function getAdmin() public view returns (address)',
-  'function isAdmin() public view returns (bool)',
-  'function admin() public view returns (address)',
-  'function totalCertificates() public view returns (uint256)',
-  'function isCertificateNumberExists(string _certificateNumber) public view returns (bool)'
-];
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "certificateHash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "certificateNumber",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "studentName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "enrollmentNumber",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "course",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "issueDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "issuerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "CertificateIssued",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "certificateHash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isValid",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "verificationTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "CertificateVerified",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "enrollmentNumber",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "studentName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "registrationDate",
+        "type": "uint256"
+      }
+    ],
+    "name": "StudentRegistered",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "admin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAdmin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllCertificateHashes",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllEnrollmentNumbers",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_certificateHash",
+        "type": "string"
+      }
+    ],
+    "name": "getCertificate",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "certificateNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "studentName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "enrollmentNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "course",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "institution",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "issueYear",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "issueDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "ipfsHash",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "issuerAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_enrollmentNumber",
+        "type": "string"
+      }
+    ],
+    "name": "getStudent",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "mobileNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "department",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "batchYear",
+        "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "isRegistered",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "registrationDate",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_enrollmentNumber",
+        "type": "string"
+      }
+    ],
+    "name": "getStudentCertificates",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalCertificates",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isAdmin",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_certificateNumber",
+        "type": "string"
+      }
+    ],
+    "name": "isCertificateNumberExists",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_certificateHash",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_certificateNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_enrollmentNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_studentName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_course",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_institution",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_issueYear",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_ipfsHash",
+        "type": "string"
+      }
+    ],
+    "name": "issueCertificate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_enrollmentNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_email",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_mobileNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_department",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_batchYear",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_password",
+        "type": "string"
+      }
+    ],
+    "name": "registerStudent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalCertificates",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_certificateHash",
+        "type": "string"
+      }
+    ],
+    "name": "verifyCertificate",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_certificateHash",
+        "type": "string"
+      }
+    ],
+    "name": "verifyCertificateView",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_enrollmentNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_password",
+        "type": "string"
+      }
+    ],
+    "name": "verifyStudentLogin",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+] as const;
 
 // ============================================
 // CONFIGURATION - UPDATE THESE AFTER REDEPLOY
 // ============================================
 
-export const DEFAULT_CONTRACT_ADDRESS = '0x92f6653E7FF0652A2d7042857D838c141ee7797F';
-export const ADMIN_WALLET_ADDRESS = '0xE894bc126822B8FBbeD56133E27221a0fC74DAd3';
+export const DEFAULT_CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+export const ADMIN_WALLET_ADDRESS = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
 // Ganache Network Configuration
-export const GANACHE_RPC_URL = 'http://127.0.0.1:7545';
-export const GANACHE_CHAIN_ID = 1337;
-export const GANACHE_CHAIN_ID_HEX = '0x539';
+export const GANACHE_RPC_URL = 'http://127.0.0.1:8545';
+export const GANACHE_CHAIN_ID = 31337;
+export const GANACHE_CHAIN_ID_HEX = '0x7a69';
 
 export interface Certificate {
   certificateNumber: string;
@@ -106,7 +574,7 @@ export class BlockchainService {
       let chainId = await window.ethereum.request({ method: 'eth_chainId' });
       console.log('Connected to Chain ID:', chainId);
 
-      if (chainId !== GANACHE_CHAIN_ID_HEX) {
+      if (chainId !== GANACHE_CHAIN_ID_HEX && chainId !== '0x539') {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
@@ -119,7 +587,7 @@ export class BlockchainService {
               params: [
                 {
                   chainId: GANACHE_CHAIN_ID_HEX,
-                  chainName: 'Ganache Local',
+                  chainName: 'Hardhat Local',
                   nativeCurrency: {
                     name: 'ETH',
                     symbol: 'ETH',
@@ -130,14 +598,14 @@ export class BlockchainService {
               ]
             });
           } else {
-            throw new Error('Please switch MetaMask to Ganache network manually.');
+            throw new Error('Please switch MetaMask to Hardhat local network (Chain ID 31337) manually.');
           }
         }
 
         chainId = await window.ethereum.request({ method: 'eth_chainId' });
 
-        if (chainId !== GANACHE_CHAIN_ID_HEX) {
-          throw new Error('MetaMask is not connected to Ganache (Chain ID 1337).');
+        if (chainId !== GANACHE_CHAIN_ID_HEX && chainId !== '0x539') {
+          throw new Error('MetaMask is not connected to local node (Chain ID 31337).');
         }
       }
 

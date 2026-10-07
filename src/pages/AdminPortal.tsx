@@ -369,7 +369,7 @@ export default function AdminPortal() {
 
                 <div className="pt-2 text-center">
                   <p className="text-[11px] text-muted-foreground font-mono">
-                    Target Network: Ganache RPC (http://127.0.0.1:7545)
+                    Target Network: Hardhat Node (http://127.0.0.1:8545)
                   </p>
                 </div>
               </div>
@@ -413,7 +413,7 @@ export default function AdminPortal() {
                     className="mt-2 font-mono text-xs h-11 rounded-xl"
                   />
                   <p className="mt-1.5 text-[11px] text-muted-foreground">
-                    Deployed contract address from Remix IDE or Ganache.
+                    Deployed contract address from Hardhat deploy script or local node.
                   </p>
                 </div>
 
@@ -578,7 +578,7 @@ export default function AdminPortal() {
               </span>
               <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                Ganache Local (Chain ID 1337 / Port 7545)
+                Hardhat Local (Chain ID 31337 / Port 8545)
               </p>
             </div>
           </div>

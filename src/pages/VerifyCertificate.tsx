@@ -203,7 +203,7 @@ export default function VerifyCertificate() {
 
           toast({
             title: 'Verification Failed',
-            description: 'Certificate record not found. Please ensure Ganache is running on port 7545.',
+            description: 'Certificate record not found. Please ensure Hardhat node is running on port 8545.',
             variant: 'destructive'
           });
         }
