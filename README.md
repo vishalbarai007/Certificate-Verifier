@@ -11,16 +11,6 @@ A decentralized, tamper-proof **Blockchain Academic Certificate Verification Pla
 
 ---
 
-## 👨‍💻 Developer & Author
-
-**Vishal Barai**  
-Computer Engineering  
-Blockchain • Full Stack Development • Web3 Enthusiast  
-GitHub: [https://github.com/vishalbarai007](https://github.com/vishalbarai007)  
-Repository: [https://github.com/vishalbarai007/Certificate-Verifier.git](https://github.com/vishalbarai007/Certificate-Verifier.git)
-
----
-
 ## 🌟 Key Features
 
 ### 🏛️ 1. Institution Admin Portal
